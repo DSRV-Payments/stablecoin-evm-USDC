@@ -81,10 +81,7 @@ abstract contract EIP2612 is AbstractFiatTokenV2, EIP712Domain {
         uint256 deadline,
         bytes memory signature
     ) internal {
-        require(
-            deadline == type(uint256).max || deadline >= now,
-            "FiatTokenV2: permit is expired"
-        );
+        require(deadline == type(uint256).max || deadline >= now, "");
 
         bytes32 typedDataHash = MessageHashUtils.toTypedDataHash(
             _domainSeparator(),
@@ -105,7 +102,7 @@ abstract contract EIP2612 is AbstractFiatTokenV2, EIP712Domain {
                 typedDataHash,
                 signature
             ),
-            "EIP2612: invalid signature"
+            ""
         );
 
         _approve(owner, spender, value);

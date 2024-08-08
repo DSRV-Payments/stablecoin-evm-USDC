@@ -284,7 +284,7 @@ abstract contract EIP3009 is AbstractFiatTokenV2, EIP712Domain {
                 MessageHashUtils.toTypedDataHash(_domainSeparator(), dataHash),
                 signature
             ),
-            "FiatTokenV2: invalid signature"
+            ""
         );
     }
 
@@ -297,10 +297,7 @@ abstract contract EIP3009 is AbstractFiatTokenV2, EIP712Domain {
         private
         view
     {
-        require(
-            !_authorizationStates[authorizer][nonce],
-            "FiatTokenV2: authorization is used or canceled"
-        );
+        require(!_authorizationStates[authorizer][nonce], "");
     }
 
     /**
@@ -316,11 +313,8 @@ abstract contract EIP3009 is AbstractFiatTokenV2, EIP712Domain {
         uint256 validAfter,
         uint256 validBefore
     ) private view {
-        require(
-            now > validAfter,
-            "FiatTokenV2: authorization is not yet valid"
-        );
-        require(now < validBefore, "FiatTokenV2: authorization is expired");
+        require(now > validAfter, "");
+        require(now < validBefore, "");
         _requireUnusedAuthorization(authorizer, nonce);
     }
 
