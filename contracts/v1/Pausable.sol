@@ -60,7 +60,7 @@ contract Pausable is Ownable {
      * @dev throws if called by any account other than the pauser
      */
     modifier onlyPauser() {
-        require(msg.sender == pauser, "Pausable: caller is not the pauser");
+        require(_msgSender() == pauser, "Pausable: caller is not the pauser");
         _;
     }
 

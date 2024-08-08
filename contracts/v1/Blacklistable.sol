@@ -19,6 +19,7 @@
 pragma solidity 0.6.12;
 
 import { Ownable } from "./Ownable.sol";
+import { Context } from "@openzeppelin/contracts/GSN/Context.sol";
 
 /**
  * @title Blacklistable Token
@@ -37,7 +38,7 @@ abstract contract Blacklistable is Ownable {
      */
     modifier onlyBlacklister() {
         require(
-            msg.sender == blacklister,
+            _msgSender() == blacklister,
             "Blacklistable: caller is not the blacklister"
         );
         _;

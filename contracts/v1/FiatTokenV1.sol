@@ -23,6 +23,7 @@ import { AbstractFiatTokenV1 } from "./AbstractFiatTokenV1.sol";
 import { Ownable } from "./Ownable.sol";
 import { Pausable } from "./Pausable.sol";
 import { Blacklistable } from "./Blacklistable.sol";
+import { Context } from "@openzeppelin/contracts/GSN/Context.sol";
 
 /**
  * @title FiatToken
@@ -107,7 +108,7 @@ contract FiatTokenV1 is AbstractFiatTokenV1, Ownable, Pausable, Blacklistable {
      * @dev Throws if called by any account other than a minter.
      */
     modifier onlyMinters() {
-        require(minters[msg.sender], "FiatToken: caller is not a minter");
+        require(minters[_msgSender()], "FiatToken: caller is not a minter");
         _;
     }
 
@@ -122,14 +123,14 @@ contract FiatTokenV1 is AbstractFiatTokenV1, Ownable, Pausable, Blacklistable {
         external
         whenNotPaused
         onlyMinters
-        notBlacklisted(msg.sender)
+        notBlacklisted(_msgSender())
         notBlacklisted(_to)
         returns (bool)
     {
         require(_to != address(0), "FiatToken: mint to the zero address");
         require(_amount > 0, "FiatToken: mint amount not greater than 0");
 
-        uint256 mintingAllowedAmount = minterAllowed[msg.sender];
+        uint256 mintingAllowedAmount = minterAllowed[_msgSender()];
         require(
             _amount <= mintingAllowedAmount,
             "FiatToken: mint amount exceeds minterAllowance"
@@ -137,8 +138,8 @@ contract FiatTokenV1 is AbstractFiatTokenV1, Ownable, Pausable, Blacklistable {
 
         totalSupply_ = totalSupply_.add(_amount);
         _setBalance(_to, _balanceOf(_to).add(_amount));
-        minterAllowed[msg.sender] = mintingAllowedAmount.sub(_amount);
-        emit Mint(msg.sender, _to, _amount);
+        minterAllowed[_msgSender()] = mintingAllowedAmount.sub(_amount);
+        emit Mint(_msgSender(), _to, _amount);
         emit Transfer(address(0), _to, _amount);
         return true;
     }
@@ -148,7 +149,7 @@ contract FiatTokenV1 is AbstractFiatTokenV1, Ownable, Pausable, Blacklistable {
      */
     modifier onlyMasterMinter() {
         require(
-            msg.sender == masterMinter,
+            _msgSender() == masterMinter,
             "FiatToken: caller is not the masterMinter"
         );
         _;
@@ -221,11 +222,11 @@ contract FiatTokenV1 is AbstractFiatTokenV1, Ownable, Pausable, Blacklistable {
         virtual
         override
         whenNotPaused
-        notBlacklisted(msg.sender)
+        notBlacklisted(_msgSender())
         notBlacklisted(spender)
         returns (bool)
     {
-        _approve(msg.sender, spender, value);
+        _approve(_msgSender(), spender, value);
         return true;
     }
 
@@ -262,17 +263,17 @@ contract FiatTokenV1 is AbstractFiatTokenV1, Ownable, Pausable, Blacklistable {
         external
         override
         whenNotPaused
-        notBlacklisted(msg.sender)
+        notBlacklisted(_msgSender())
         notBlacklisted(from)
         notBlacklisted(to)
         returns (bool)
     {
         require(
-            value <= allowed[from][msg.sender],
+            value <= allowed[from][_msgSender()],
             "ERC20: transfer amount exceeds allowance"
         );
         _transfer(from, to, value);
-        allowed[from][msg.sender] = allowed[from][msg.sender].sub(value);
+        allowed[from][_msgSender()] = allowed[from][_msgSender()].sub(value);
         return true;
     }
 
@@ -286,11 +287,11 @@ contract FiatTokenV1 is AbstractFiatTokenV1, Ownable, Pausable, Blacklistable {
         external
         override
         whenNotPaused
-        notBlacklisted(msg.sender)
+        notBlacklisted(_msgSender())
         notBlacklisted(to)
         returns (bool)
     {
-        _transfer(msg.sender, to, value);
+        _transfer(_msgSender(), to, value);
         return true;
     }
 
@@ -361,16 +362,16 @@ contract FiatTokenV1 is AbstractFiatTokenV1, Ownable, Pausable, Blacklistable {
         external
         whenNotPaused
         onlyMinters
-        notBlacklisted(msg.sender)
+        notBlacklisted(_msgSender())
     {
-        uint256 balance = _balanceOf(msg.sender);
+        uint256 balance = _balanceOf(_msgSender());
         require(_amount > 0, "FiatToken: burn amount not greater than 0");
         require(balance >= _amount, "FiatToken: burn amount exceeds balance");
 
         totalSupply_ = totalSupply_.sub(_amount);
-        _setBalance(msg.sender, balance.sub(_amount));
-        emit Burn(msg.sender, _amount);
-        emit Transfer(msg.sender, address(0), _amount);
+        _setBalance(_msgSender(), balance.sub(_amount));
+        emit Burn(_msgSender(), _amount);
+        emit Transfer(_msgSender(), address(0), _amount);
     }
 
     /**

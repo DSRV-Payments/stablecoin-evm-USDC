@@ -21,6 +21,7 @@ pragma solidity 0.6.12;
 import { Controller } from "./Controller.sol";
 import { MinterManagementInterface } from "./MinterManagementInterface.sol";
 import { SafeMath } from "@openzeppelin/contracts/math/SafeMath.sol";
+import { Context } from "@openzeppelin/contracts/GSN/Context.sol";
 
 // solhint-disable func-name-mixedcase
 
@@ -104,8 +105,8 @@ contract MintController is Controller {
      * @notice Removes the controller's own minter.
      */
     function removeMinter() public onlyController returns (bool) {
-        address minter = controllers[msg.sender];
-        emit MinterRemoved(msg.sender, minter);
+        address minter = controllers[_msgSender()];
+        emit MinterRemoved(_msgSender(), minter);
         return minterManager.removeMinter(minter);
     }
 
@@ -118,8 +119,8 @@ contract MintController is Controller {
         onlyController
         returns (bool)
     {
-        address minter = controllers[msg.sender];
-        emit MinterConfigured(msg.sender, minter, _newAllowance);
+        address minter = controllers[_msgSender()];
+        emit MinterConfigured(_msgSender(), minter, _newAllowance);
         return internal_setMinterAllowance(minter, _newAllowance);
     }
 
@@ -138,7 +139,7 @@ contract MintController is Controller {
             _allowanceIncrement > 0,
             "Allowance increment must be greater than 0"
         );
-        address minter = controllers[msg.sender];
+        address minter = controllers[_msgSender()];
         require(
             minterManager.isMinter(minter),
             "Can only increment allowance for minters in minterManager"
@@ -148,7 +149,7 @@ contract MintController is Controller {
         uint256 newAllowance = currentAllowance.add(_allowanceIncrement);
 
         emit MinterAllowanceIncremented(
-            msg.sender,
+            _msgSender(),
             minter,
             _allowanceIncrement,
             newAllowance
@@ -172,7 +173,7 @@ contract MintController is Controller {
             _allowanceDecrement > 0,
             "Allowance decrement must be greater than 0"
         );
-        address minter = controllers[msg.sender];
+        address minter = controllers[_msgSender()];
         require(
             minterManager.isMinter(minter),
             "Can only decrement allowance for minters in minterManager"
@@ -187,7 +188,7 @@ contract MintController is Controller {
         uint256 newAllowance = currentAllowance.sub(actualAllowanceDecrement);
 
         emit MinterAllowanceDecremented(
-            msg.sender,
+            _msgSender(),
             minter,
             actualAllowanceDecrement,
             newAllowance

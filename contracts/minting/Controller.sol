@@ -19,6 +19,7 @@
 pragma solidity 0.6.12;
 
 import { Ownable } from "../v1/Ownable.sol";
+import { Context } from "@openzeppelin/contracts/GSN/Context.sol";
 
 /**
  * @title Controller
@@ -45,8 +46,8 @@ contract Controller is Ownable {
      */
     modifier onlyController() {
         require(
-            controllers[msg.sender] != address(0),
-            "The value of controllers[msg.sender] must be non-zero"
+            controllers[_msgSender()] != address(0),
+            "The value of controllers[_msgSender()] must be non-zero"
         );
         _;
     }

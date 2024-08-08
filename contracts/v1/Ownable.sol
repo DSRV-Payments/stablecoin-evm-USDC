@@ -25,6 +25,8 @@
 
 pragma solidity 0.6.12;
 
+import { Context } from "@openzeppelin/contracts/GSN/Context.sol";
+
 /**
  * @notice The Ownable contract has an owner address, and provides basic
  * authorization control functions
@@ -34,7 +36,7 @@ pragma solidity 0.6.12;
  * 2. Reformat, conform to Solidity 0.6 syntax, and add error messages (5/13/20)
  * 3. Make public functions external (5/27/20)
  */
-contract Ownable {
+contract Ownable is Context {
     // Owner of the contract
     address private _owner;
 
@@ -49,7 +51,7 @@ contract Ownable {
      * @dev The constructor sets the original owner of the contract to the sender account.
      */
     constructor() public {
-        setOwner(msg.sender);
+        setOwner(_msgSender());
     }
 
     /**
@@ -71,7 +73,7 @@ contract Ownable {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
-        require(msg.sender == _owner, "Ownable: caller is not the owner");
+        require(_msgSender() == _owner, "Ownable: caller is not the owner");
         _;
     }
 

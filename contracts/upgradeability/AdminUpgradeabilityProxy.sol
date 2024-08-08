@@ -19,6 +19,7 @@
 pragma solidity 0.6.12;
 
 import { UpgradeabilityProxy } from "./UpgradeabilityProxy.sol";
+import { Context } from "@openzeppelin/contracts/GSN/Context.sol";
 
 /**
  * @notice This contract combines an upgradeability proxy with an authorization
@@ -28,7 +29,7 @@ import { UpgradeabilityProxy } from "./UpgradeabilityProxy.sol";
  * 1. Reformat, conform to Solidity 0.6 syntax, and add error messages (5/13/20)
  * 2. Remove ifAdmin modifier from admin() and implementation() (5/13/20)
  */
-contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
+contract AdminUpgradeabilityProxy is UpgradeabilityProxy, Context {
     /**
      * @dev Emitted when the administration has been transferred.
      * @param previousAdmin Address of the previous admin.
@@ -50,7 +51,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
      * to the implementation.
      */
     modifier ifAdmin() {
-        if (msg.sender == _admin()) {
+        if (_msgSender() == _admin()) {
             _;
         } else {
             _fallback();
@@ -68,7 +69,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
     {
         assert(ADMIN_SLOT == keccak256("org.zeppelinos.proxy.admin"));
 
-        _setAdmin(msg.sender);
+        _setAdmin(_msgSender());
     }
 
     /**
@@ -159,7 +160,7 @@ contract AdminUpgradeabilityProxy is UpgradeabilityProxy {
      */
     function _willFallback() internal override {
         require(
-            msg.sender != _admin(),
+            _msgSender() != _admin(),
             "Cannot call fallback function from the proxy admin"
         );
         super._willFallback();
