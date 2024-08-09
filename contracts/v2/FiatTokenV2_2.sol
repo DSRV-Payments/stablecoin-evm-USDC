@@ -262,7 +262,7 @@ contract FiatTokenV2_2 is FiatTokenV2_1 {
         whenNotPaused
         returns (bool)
     {
-        _approve(msg.sender, spender, value);
+        _approve(_msgSender(), spender, value);
         return true;
     }
 
@@ -290,7 +290,7 @@ contract FiatTokenV2_2 is FiatTokenV2_1 {
         whenNotPaused
         returns (bool)
     {
-        _increaseAllowance(msg.sender, spender, increment);
+        _increaseAllowance(_msgSender(), spender, increment);
         return true;
     }
 
@@ -303,7 +303,7 @@ contract FiatTokenV2_2 is FiatTokenV2_1 {
         whenNotPaused
         returns (bool)
     {
-        _decreaseAllowance(msg.sender, spender, decrement);
+        _decreaseAllowance(_msgSender(), spender, decrement);
         return true;
     }
 }

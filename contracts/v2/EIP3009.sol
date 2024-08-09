@@ -22,6 +22,7 @@ import { AbstractFiatTokenV2 } from "./AbstractFiatTokenV2.sol";
 import { EIP712Domain } from "./EIP712Domain.sol";
 import { SignatureChecker } from "../util/SignatureChecker.sol";
 import { MessageHashUtils } from "../util/MessageHashUtils.sol";
+import { Context } from "@openzeppelin/contracts/GSN/Context.sol";
 
 /**
  * @title EIP-3009
@@ -29,7 +30,7 @@ import { MessageHashUtils } from "../util/MessageHashUtils.sol";
  * @dev Contracts that inherit from this must wrap these with publicly
  * accessible functions, optionally adding modifiers where necessary
  */
-abstract contract EIP3009 is AbstractFiatTokenV2, EIP712Domain {
+abstract contract EIP3009 is AbstractFiatTokenV2, EIP712Domain, Context {
     // keccak256("TransferWithAuthorization(address from,address to,uint256 value,uint256 validAfter,uint256 validBefore,bytes32 nonce)")
     bytes32
         public constant TRANSFER_WITH_AUTHORIZATION_TYPEHASH = 0x7c7c6cdb67a18743f49ec6fa9b35f50d52ed05cbed4cc592e13b44501c1a2267;
@@ -202,7 +203,7 @@ abstract contract EIP3009 is AbstractFiatTokenV2, EIP712Domain {
         bytes32 nonce,
         bytes memory signature
     ) internal {
-        require(to == msg.sender, "FiatTokenV2: caller must be the payee");
+        require(to == _msgSender(), "FiatTokenV2: caller must be the payee");
         _requireValidAuthorization(from, nonce, validAfter, validBefore);
         _requireValidSignature(
             from,

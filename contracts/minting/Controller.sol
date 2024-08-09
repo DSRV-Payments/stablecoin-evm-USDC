@@ -19,7 +19,6 @@
 pragma solidity 0.6.12;
 
 import { Ownable } from "../v1/Ownable.sol";
-import { Context } from "@openzeppelin/contracts/GSN/Context.sol";
 
 /**
  * @title Controller

@@ -93,7 +93,7 @@ abstract contract AbstractV2Upgrader is Ownable {
         uint256 balance = fiatToken.balanceOf(address(this));
         if (balance > 0) {
             require(
-                fiatToken.transfer(msg.sender, balance),
+                fiatToken.transfer(_msgSender(), balance),
                 "Failed to withdraw FiatToken"
             );
         }
@@ -115,6 +115,6 @@ abstract contract AbstractV2Upgrader is Ownable {
      */
     function tearDown() internal {
         _helper.tearDown();
-        selfdestruct(msg.sender);
+        selfdestruct(_msgSender());
     }
 }

@@ -96,7 +96,7 @@ contract V2_2Upgrader is AbstractV2Upgrader {
         uint256 contractBal = v2_2Helper.balanceOf(address(this));
         require(contractBal >= 2e5, "V2_2Upgrader: 0.2 FiatToken needed");
 
-        uint256 callerBal = v2_2Helper.balanceOf(msg.sender);
+        uint256 callerBal = v2_2Helper.balanceOf(_msgSender());
 
         // Keep original contract metadata
         FiatTokenMetadata memory originalMetadata = FiatTokenMetadata(
@@ -159,8 +159,8 @@ contract V2_2Upgrader is AbstractV2Upgrader {
 
         // Test transfer
         require(
-            v2_2.transfer(msg.sender, 1e5) &&
-                v2_2.balanceOf(msg.sender) == callerBal.add(1e5) &&
+            v2_2.transfer(_msgSender(), 1e5) &&
+                v2_2.balanceOf(_msgSender()) == callerBal.add(1e5) &&
                 v2_2.balanceOf(address(this)) == contractBal.sub(1e5),
             "V2_2Upgrader: transfer test failed"
         );
@@ -169,9 +169,9 @@ contract V2_2Upgrader is AbstractV2Upgrader {
         require(
             v2_2.approve(address(v2_2Helper), 1e5) &&
                 v2_2.allowance(address(this), address(v2_2Helper)) == 1e5 &&
-                v2_2Helper.transferFrom(address(this), msg.sender, 1e5) &&
-                v2_2.allowance(address(this), msg.sender) == 0 &&
-                v2_2.balanceOf(msg.sender) == callerBal.add(2e5) &&
+                v2_2Helper.transferFrom(address(this), _msgSender(), 1e5) &&
+                v2_2.allowance(address(this), _msgSender()) == 0 &&
+                v2_2.balanceOf(_msgSender()) == callerBal.add(2e5) &&
                 v2_2.balanceOf(address(this)) == contractBal.sub(2e5),
             "V2_2Upgrader: approve/transferFrom test failed"
         );

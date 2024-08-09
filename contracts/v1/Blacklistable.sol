@@ -19,7 +19,6 @@
 pragma solidity 0.6.12;
 
 import { Ownable } from "./Ownable.sol";
-import { Context } from "@openzeppelin/contracts/GSN/Context.sol";
 
 /**
  * @title Blacklistable Token

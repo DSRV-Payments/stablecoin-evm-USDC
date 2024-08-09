@@ -55,11 +55,11 @@ contract FiatTokenV2 is FiatTokenV1_1, EIP3009, EIP2612 {
         external
         virtual
         whenNotPaused
-        notBlacklisted(msg.sender)
+        notBlacklisted(_msgSender())
         notBlacklisted(spender)
         returns (bool)
     {
-        _increaseAllowance(msg.sender, spender, increment);
+        _increaseAllowance(_msgSender(), spender, increment);
         return true;
     }
 
@@ -73,11 +73,11 @@ contract FiatTokenV2 is FiatTokenV1_1, EIP3009, EIP2612 {
         external
         virtual
         whenNotPaused
-        notBlacklisted(msg.sender)
+        notBlacklisted(_msgSender())
         notBlacklisted(spender)
         returns (bool)
     {
-        _decreaseAllowance(msg.sender, spender, decrement);
+        _decreaseAllowance(_msgSender(), spender, decrement);
         return true;
     }
 

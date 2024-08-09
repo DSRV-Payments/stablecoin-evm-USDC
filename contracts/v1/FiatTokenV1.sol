@@ -23,7 +23,6 @@ import { AbstractFiatTokenV1 } from "./AbstractFiatTokenV1.sol";
 import { Ownable } from "./Ownable.sol";
 import { Pausable } from "./Pausable.sol";
 import { Blacklistable } from "./Blacklistable.sol";
-import { Context } from "@openzeppelin/contracts/GSN/Context.sol";
 
 /**
  * @title FiatToken
